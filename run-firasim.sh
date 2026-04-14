@@ -22,7 +22,7 @@ fi
 # ── Start container in background ────────────────────────────────
 echo "Starting FIRASim container (geometry: $GEOMETRY)..."
 docker run --rm -d \
-    -p "${VNC_PORT}:5900" \
+    --network=host \
     -e VNC_PASSWORD="$VNC_PASS" \
     -e VNC_GEOMETRY="$GEOMETRY" \
     --name "$CONTAINER" \
