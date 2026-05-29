@@ -41,10 +41,22 @@ if [[ "$MODE" == "x11" ]]; then
     # Allow the container to access the X server
     xhost +local:docker 2>/dev/null || true
 
+    # Build GPU flags if /dev/dri exists (Intel/AMD/NVIDIA)
+    GPU_FLAGS=()
+    if [[ -d /dev/dri ]]; then
+        GPU_FLAGS+=(--device /dev/dri:/dev/dri)
+        echo "  GPU passthrough: /dev/dri"
+    else
+        echo "  WARNING: /dev/dri not found, using software rendering"
+        GPU_FLAGS+=(-e LIBGL_ALWAYS_SOFTWARE=1)
+    fi
+
     docker run --rm -it \
         --network=host \
         -e DISPLAY="$DISPLAY" \
+        -e LIBGL_DRI3_DISABLE=1 \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+        "${GPU_FLAGS[@]}" \
         --name "$CONTAINER" \
         "$IMAGE" "$@"
 
