@@ -64,6 +64,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         xvfb \
         x11vnc \
         x11-utils \
+        libgl1-mesa-dri \
+        libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local /usr/local
